@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Simple middleware to limit concurrency",
   "main": "lib/limiter.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "test": "npm test"
   },
