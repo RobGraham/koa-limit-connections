@@ -1,0 +1,34 @@
+{
+  "name": "koa-limit-connections",
+  "version": "1.0.0",
+  "description": "Simple middleware to limit concurrency",
+  "main": "lib/limiter.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RobGraham/koa-limit-connections.git"
+  },
+  "keywords": [
+    "koa",
+    "limit",
+    "connections",
+    "concurrency",
+    "middleware"
+  ],
+  "author": "Rob Graham <rob.f.graham@nordstrom.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RobGraham/koa-limit-connections/issues"
+  },
+  "homepage": "https://github.com/RobGraham/koa-limit-connections#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.18.0",
+    "mocha": "^3.2.0"
+  }
+}
