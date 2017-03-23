@@ -1,6 +1,6 @@
 {
   "name": "koa-limit-connections",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Simple middleware to limit concurrency",
   "main": "lib/limiter.js",
   "scripts": {
