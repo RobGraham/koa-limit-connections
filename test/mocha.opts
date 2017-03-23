@@ -1,0 +1,4 @@
+--colors
+--inline-diffs
+--reporter spec
+--require test/support/globals
