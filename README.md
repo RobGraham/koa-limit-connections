@@ -32,6 +32,8 @@ app.listen(3000);
 
 ### max
 `number` - **Default 100**
+
+
 Use any value > 0 to set your threshold.
 
 ```js
@@ -40,8 +42,11 @@ app.use(limitConnections({
 }));
 ```
 
+
 ### dynamicMax
 `function` - Has Koa context
+
+
 Allows you to update the **max** threshold dynamically as long as it's parseable and value exceeds 0 else falls back to **max**
 
 ```js
@@ -54,8 +59,11 @@ app.use(limitConnections({
 }));
 ```
 
+
 ### onConnection
 `function([connections][, max])` - Has Koa context
+
+
 Called on initial request.
 
 ```js
@@ -66,8 +74,11 @@ app.use(limitConnections({
 }));
 ```
 
+
 ### onMax
 `function([connections][, max])` - Has Koa context
+
+
 Called when threshold is met preventing the rest of the middelware stack being called. Use this as an opportunity to customize your response. By default it sets response status to **503** and response body to **Too Busy**
 
 ```js
@@ -78,8 +89,11 @@ app.use(limitConnections({
 }));
 ```
 
+
 ### onException
 `function([exception])` - Has Koa context
+
+
 Added as an additional security measure **koa-limit-connections** catches unhandled exceptions to ensure that connections are decremented even in the case of exceptions caused from downstream middleware or other application faults.
 
 ```js
