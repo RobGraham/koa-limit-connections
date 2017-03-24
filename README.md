@@ -31,7 +31,7 @@ app.listen(3000);
 ## Options
 
 ### max
-`number` - **Default 100**
+`number` - Default 100
 
 
 Use any value > 0 to set your threshold.
