@@ -1,12 +1,15 @@
 const limiter = require("../lib/limiter");
+const cloneDeep = require('lodash.clonedeep');
 
 describe("Limit Connections", () => {
 
 	const contextStub = { status: 200, body: "Hello World" };
-	let context;
+    let reqContext;
+	let secondReqContext;
 
     beforeEach( ()=> {
-        context = contextStub;
+        reqContext = cloneDeep(contextStub);
+        secondReqContext = cloneDeep(contextStub);
     });
 
     it("should return a generator", () => {
@@ -25,67 +28,69 @@ describe("Limit Connections", () => {
     });
 
 	it("Should set max connections to default of 100", () => {
-		const gen = limiter({
+		const middleware = limiter({
 			onConnection: function (current, max) {
 				this.maxConnections = max;
 			}
-		}).call(context);
+		});
 
-		gen.next();
+		middleware.call(reqContext).next();
 
-		expect(context.maxConnections).to.equal(100);
+		expect(reqContext.maxConnections).to.equal(100);
 	});
 
 	it("Should set max connections to 1", () => {
-		const gen = limiter({
+		const middleware = limiter({
 			max: 1,
 			onConnection: function (current, max) {
 				this.maxConnections = max;
 			}
-		}).call(context);
+		});
 
-		gen.next();
+		middleware.call(reqContext).next();
 
-		expect(context.maxConnections).to.equal(1);
+		expect(reqContext.maxConnections).to.equal(1);
 	});
 
-	/*it("Should trigger onMax callback when max connections reached", () => {
-		const gen = limiter({
+	it("Should trigger onMax callback when max connections reached", () => {
+        const secondReqContext = cloneDeep(reqContext);
+        const middleware = limiter({
 			max: 1,
 			onMax: function (current, max) {
 				this.maxReached = true;
 			}
-		}).call(context);
+		});
 
-		gen.next();
+        middleware.call(reqContext).next();
+        middleware.call(secondReqContext).next();
 
-		expect(context.maxReached).to.be.true;
-	});*/
+		expect(secondReqContext.maxReached).to.be.true;
+	});
 
-	/*it("Should return default status of 503 when max is reached", () => {
-		const max = 1;
-		const gen = limiter({ max: 1 }).call(context);
+	it("Should return default status of 503 when max is reached", () => {
+        const middleware = limiter({ max: 1 });
 
-		gen.next();
+        middleware.call(reqContext).next();
+        middleware.call(secondReqContext).next();
 
-		expect(context.status).to.equal(503);
-	});*/
+		expect(secondReqContext.status).to.equal(503);
+	});
 
 	it("Should increment connections", () => {
-		const gen = limiter({
+		const middleware = limiter({
 			onConnection: function (current, max) {
 				this.connections = current;
 			}
-		}).call(context);
+		});
 
-		gen.next();
+		middleware.call(reqContext).next();
 
-		expect(context.connections).to.equal(1);
+		expect(reqContext.connections).to.equal(1);
 	});
 
-	/*it("Should decrement connections", () => {
-
-		const gen = limiter({
+	it("Should decrement connections", () => {
+        const secondReqContext = cloneDeep(reqContext);
+		const middleware = limiter({
 			max: 1,
 			onConnection: function(current) {
 				// increases by 1
@@ -95,32 +100,33 @@ describe("Limit Connections", () => {
 				// Has decreased by 1
 				this.connections = current;
 			}
-		}).call(context);
+		});
 
-		gen.next();
+        middleware.call(reqContext).next();
+        middleware.call(secondReqContext).next();
 
-		expect(context.connections).to.equal(0);
-	});*/
+		expect(secondReqContext.connections).to.equal(1);
+	});
 
 	describe("When using dynamicMax", () => {
 
 		it("max should be set of returned value", () => {
-			const gen = limiter({
+			const middleware = limiter({
 				dynamicMax: function() {
 					return 1;
 				},
 				onConnection: function (current, max) {
 					this.maxConnections = max;
 				}
-			}).call(context);
+			});
 
-			gen.next();
+			middleware.call(reqContext).next();
 
-			expect(context.maxConnections).to.equal(1);
+			expect(reqContext.maxConnections).to.equal(1);
 		});
 
 		it("max should fallback when returned value can't be parsed", () => {
-			const gen = limiter({
+			const middleware = limiter({
 				max: 20,
 				dynamicMax: function() {
 					return "hey";
@@ -128,15 +134,15 @@ describe("Limit Connections", () => {
 				onConnection: function (current, max) {
 					this.maxConnections = max;
 				}
-			}).call(context);
+			});
 
-			gen.next();
+			middleware.call(reqContext).next();
 
-			expect(context.maxConnections).to.equal(20);
+			expect(reqContext.maxConnections).to.equal(20);
 		});
 
 		it("max should fallback when returned value is < 1", () => {
-			const gen = limiter({
+			const middleware = limiter({
 				max: 20,
 				dynamicMax: function() {
 					return -1;
@@ -144,11 +150,11 @@ describe("Limit Connections", () => {
 				onConnection: function (current, max) {
 					this.maxConnections = max;
 				}
-			}).call(context);
+			});
 
-			gen.next();
+			middleware.call(reqContext).next();
 
-			expect(context.maxConnections).to.equal(20);
+			expect(reqContext.maxConnections).to.equal(20);
 		});
 
 	});
