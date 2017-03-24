@@ -18,7 +18,7 @@
     "concurrency",
     "middleware"
   ],
-  "author": "Rob Graham <rob.f.graham@nordstrom.com>",
+  "author": "Rob Graham",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/RobGraham/koa-limit-connections/issues"
