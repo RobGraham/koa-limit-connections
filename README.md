@@ -54,7 +54,7 @@ app.use(limitConnections({
     max: 20,
     dynamicMax: function () {
         // get request header
-        return parseInt(this.get("limit-connections"));
+        return this.get("limit-connections");
     }
 }));
 ```
