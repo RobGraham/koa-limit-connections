@@ -158,4 +158,47 @@ describe("Limit Connections", () => {
 		});
 
 	});
+
+	describe("When catchExceptions is true", () => {
+
+		it("should catch and call onException", () => {
+			let eCount = 0;
+
+			const middleware = limiter({
+				onException: function () {
+					eCount++;
+				}
+			});
+
+			const g = middleware.call(reqContext);
+
+			g.next();
+			g.throw(new Error('Something went wrong'));
+
+			expect(eCount).to.equal(1);
+		});
+
+	});
+
+	describe("When catchExceptions is false", () => {
+
+		it("should not catch and not call onException", () => {
+			let eCount = 0;
+
+			const middleware = limiter({
+				catchExceptions: false,
+				onException: function () {
+					eCount++;
+				}
+			});
+
+			const g = middleware.call(reqContext);
+
+			g.next();
+			expect(() => g.throw(new Error('Something went wrong'))).to.throw();
+			expect(eCount).to.equal(0);
+
+		});
+
+	});
 })

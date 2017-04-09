@@ -90,6 +90,19 @@ app.use(limitConnections({
 ```
 
 
+### catchExceptions
+`boolean` - Default true
+
+
+Control whether you want to catch downstream exceptions.
+
+```js
+app.use(limitConnections({
+    catchExceptions: false
+}));
+```
+
+
 ### onException
 `function([exception])` - Has Koa context
 
